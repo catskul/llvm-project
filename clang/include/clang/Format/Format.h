@@ -1298,6 +1298,20 @@ struct FormatStyle {
   bool ConstructorInitializerAllOnOneLineOrOnePerLine;
   // clang-format on
 
+  /// If there is a break after the opening parenthesis, also break
+  /// before the closing parenthesis
+  /// \code
+  ///   true:
+  ///   someLongFunction(
+  ///       argument1, argument2
+  ///   );
+  ///
+  ///   false:
+  ///   someLongFunction(
+  ///       argument1, argument2);
+  /// \endcode
+  bool DanglingParenthesis;
+
   /// The number of characters to use for indentation of constructor
   /// initializer lists as well as inheritance lists.
   unsigned ConstructorInitializerIndentWidth;
