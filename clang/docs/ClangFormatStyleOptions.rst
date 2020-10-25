@@ -1531,6 +1531,21 @@ the configuration (without a prefix: ``Auto``).
   Analyze the formatted file for the most used line ending (``\r\n``
   or ``\n``). ``UseCRLF`` is only used as a fallback if none can be derived.
 
+**DanglingParenthesis** (``bool``)
+  If there is a break after the opening parenthesis, also break
+  before the closing parenthesis
+
+  .. code-block:: c++
+
+    true:
+    someLongFunction(
+        argument1, argument2
+    );
+
+    false:
+    someLongFunction(
+        argument1, argument2);
+
 **DerivePointerAlignment** (``bool``)
   If ``true``, analyze the formatted file for the most common
   alignment of ``&`` and ``*``.
