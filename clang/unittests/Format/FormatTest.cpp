@@ -5926,6 +5926,58 @@ TEST_F(FormatTest, AlignsAfterReturn) {
                "    code == a || code == b;");
 }
 
+TEST_F(FormatTest, AlignsClosingBracket) {
+  FormatStyle Style = getLLVMStyle();
+  Style.AlignAfterOpenBracket = FormatStyle::BAS_AlwaysBreakAndCloseOnNextLine;
+  Style.AllowAllArgumentsOnNextLine = true;
+  Style.BinPackArguments = false;
+  Style.BinPackParameters = false;
+  verifyFormat("void aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0(\n"
+               "    aaaaaaaaaaa aaaaaaaa,\n"
+               "    aaaaaaaaa aaaaaaa,\n"
+               "    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
+               ") {}",
+               Style);
+  verifyFormat("SomeLongVariableName->someVeryLongFunctionName1(\n"
+               "    aaaaaaaaaaa aaaaaaaaa,\n"
+               "    aaaaaaaaaaa aaaaaaaaa,\n"
+               "    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
+               ");",
+               Style);
+  verifyFormat("SomeLongVariableName->someFunction2(foooooooo(\n"
+               "    aaaaaaaaaaaaaaa,\n"
+               "    aaaaaaaaaaaaaaaaaaaaa,\n"
+               "    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
+               "));",
+               Style);
+  verifyFormat(
+      "aaaaaaaaaaaaaaaaaaaaaaaa3(aaaaaaaaaaaaaaaaaaaaa(\n"
+      "    aaaaaaaaaaaaaaaaaaaa(aaaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaa)\n"
+      "));",
+      Style);
+  verifyFormat(
+      "aaaaaaaaaaaaaaaaaaaaaaaa4(aaaaaaaaaa.aaaaaaaaaa(\n"
+      "    aaaaaaaaaaaaaaaaaaaa(aaaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaa)\n"
+      "));",
+      Style);
+  verifyFormat(
+      "aaaaaaaaaaaaaaaaaaaaaaaa5(\n"
+      "    aaaaaaaaaaaaaaaaaaaaa(\n"
+      "        aaaaaaaaaaaaaaaaaaaa(aaaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaa)\n"
+      "    ),\n"
+      "    aaaaaaaaaaaaaaaa\n"
+      ");",
+      Style);
+  verifyFormat(
+      "aaaaaaaaaaaaaaaaaaaaaaaa6(\n"
+      "    aaaaaaaaaaaaaaaaaaaaa(\n"
+      "        aaaaaaaaaaaaaaaaaaaa(aaaaaaaaaaaaaaaaa, aaaaaaaaaaaaaaaa)\n"
+      "    ) &&\n"
+      "    aaaaaaaaaaaaaaaa\n"
+      ");",
+      Style);
+}
+
 TEST_F(FormatTest, AlignsAfterOpenBracket) {
   verifyFormat(
       "void aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(aaaaaaaaaaa aaaaaaaa,\n"
@@ -13808,6 +13860,8 @@ TEST_F(FormatTest, ParsesConfiguration) {
               FormatStyle::BAS_DontAlign);
   CHECK_PARSE("AlignAfterOpenBracket: AlwaysBreak", AlignAfterOpenBracket,
               FormatStyle::BAS_AlwaysBreak);
+  CHECK_PARSE("AlignAfterOpenBracket: AlwaysBreakAndCloseOnNextLine", AlignAfterOpenBracket,
+              FormatStyle::BAS_AlwaysBreakAndCloseOnNextLine);
   // For backward compatibility:
   CHECK_PARSE("AlignAfterOpenBracket: false", AlignAfterOpenBracket,
               FormatStyle::BAS_DontAlign);
