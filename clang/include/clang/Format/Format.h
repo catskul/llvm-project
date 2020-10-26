@@ -76,6 +76,14 @@ struct FormatStyle {
     ///       argument1, argument2);
     /// \endcode
     BAS_AlwaysBreak,
+    /// Always break after an open bracket, if the parameters don't fit
+    /// on a single line, e.g.:
+    /// \code
+    ///   someLongFunction(
+    ///       argument1, argument2
+    ///   );
+    /// \endcode
+    BAS_AlwaysBreakAndCloseOnNextLine,
   };
 
   /// If ``true``, horizontally aligns arguments after an open bracket.
@@ -1297,20 +1305,6 @@ struct FormatStyle {
   /// \endcode
   bool ConstructorInitializerAllOnOneLineOrOnePerLine;
   // clang-format on
-
-  /// If there is a break after the opening parenthesis, also break
-  /// before the closing parenthesis
-  /// \code
-  ///   true:
-  ///   someLongFunction(
-  ///       argument1, argument2
-  ///   );
-  ///
-  ///   false:
-  ///   someLongFunction(
-  ///       argument1, argument2);
-  /// \endcode
-  bool DanglingParenthesis;
 
   /// The number of characters to use for indentation of constructor
   /// initializer lists as well as inheritance lists.

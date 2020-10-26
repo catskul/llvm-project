@@ -323,7 +323,7 @@ bool ContinuationIndenter::canBreak(const LineState &State) {
   if (Previous.is(tok::l_square) && Previous.is(TT_ObjCMethodExpr))
     return false;
 
-  if (Style.DanglingParenthesis) {
+  if (Style.AlignAfterOpenBracket == FormatStyle::BAS_AlwaysBreakAndCloseOnNextLine) {
     if (Current.is(tok::r_paren) && !State.Stack.back().BreakBeforeClosingParen)
       return false;
   }
@@ -632,7 +632,7 @@ void ContinuationIndenter::addTokenOnCurrentLine(LineState &State, bool DryRun,
   // In "AlwaysBreak" mode, enforce wrapping directly after the parenthesis by
   // disallowing any further line breaks if there is no line break after the
   // opening parenthesis. Don't break if it doesn't conserve columns.
-  if (Style.AlignAfterOpenBracket == FormatStyle::BAS_AlwaysBreak &&
+  if (Style.AlignAfterOpenBracket >= FormatStyle::BAS_AlwaysBreak &&
       (Previous.isOneOf(tok::l_paren, TT_TemplateOpener, tok::l_square) ||
        (Previous.is(tok::l_brace) && Previous.BlockKind != BK_Block &&
         Style.Cpp11BracedListStyle)) &&
@@ -919,7 +919,7 @@ unsigned ContinuationIndenter::addTokenOnNewLine(LineState &State,
     State.Stack.back().BreakBeforeClosingBrace = true;
 
   if (PreviousNonComment && PreviousNonComment->is(tok::l_paren))
-    State.Stack.back().BreakBeforeClosingParen = Style.DanglingParenthesis;
+    State.Stack.back().BreakBeforeClosingParen = (Style.AlignAfterOpenBracket == FormatStyle::BAS_AlwaysBreakAndCloseOnNextLine);
 
   if (State.Stack.back().AvoidBinPacking) {
     // If we are breaking after '(', '{', '<', or this is the break after a ':'
@@ -1016,9 +1016,8 @@ unsigned ContinuationIndenter::getNewLineColumn(const LineState &State) {
       (!Current.Next ||
        Current.Next->isOneOf(tok::semi, tok::kw_const, tok::l_brace)))
     return State.Stack[State.Stack.size() - 2].LastSpace;
-  if (Style.DanglingParenthesis && Current.is(tok::r_paren) && State.Stack.size() > 1) {
+  if ((Style.AlignAfterOpenBracket == FormatStyle::BAS_AlwaysBreakAndCloseOnNextLine) && Current.is(tok::r_paren) && State.Stack.size() > 1)
     return State.Stack[State.Stack.size() - 2].LastSpace;
-  }
   if (NextNonComment->is(TT_TemplateString) && NextNonComment->closesScope())
     return State.Stack[State.Stack.size() - 2].LastSpace;
   if (Current.is(tok::identifier) && Current.Next &&
