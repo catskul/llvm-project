@@ -1888,7 +1888,7 @@ struct FormatStyle {
   /// line.
   unsigned PenaltyReturnTypeOnItsOwnLine;
 
-  /// The ``&`` and ``*`` alignment style.
+  /// The ``&``, ``&&`` and ``*`` alignment style.
   enum PointerAlignmentStyle {
     /// Align pointer to the left.
     /// \code
@@ -1909,6 +1909,31 @@ struct FormatStyle {
 
   /// Pointer and reference alignment style.
   PointerAlignmentStyle PointerAlignment;
+
+  /// \brief The ``&`` and ``&&`` alignment style.
+  enum ReferenceAlignmentStyle {
+    /// Align reference like ``PointerAlignment``.
+    RAS_Pointer,
+    /// Align reference to the left.
+    /// \code
+    ///   int& a;
+    /// \endcode
+    RAS_Left,
+    /// Align reference to the right.
+    /// \code
+    ///   int &a;
+    /// \endcode
+    RAS_Right,
+    /// Align reference in the middle.
+    /// \code
+    ///   int & a;
+    /// \endcode
+    RAS_Middle
+  };
+
+  /// \brief Reference alignment style (overrides ``PointerAlignment`` for
+  /// references).
+  ReferenceAlignmentStyle ReferenceAlignment;
 
   /// See documentation of ``RawStringFormats``.
   struct RawStringFormat {
@@ -2382,6 +2407,7 @@ struct FormatStyle {
            PenaltyBreakTemplateDeclaration ==
                R.PenaltyBreakTemplateDeclaration &&
            PointerAlignment == R.PointerAlignment &&
+           ReferenceAlignment == R.ReferenceAlignment &&
            RawStringFormats == R.RawStringFormats &&
            SpaceAfterCStyleCast == R.SpaceAfterCStyleCast &&
            SpaceAfterLogicalNot == R.SpaceAfterLogicalNot &&

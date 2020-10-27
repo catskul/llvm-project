@@ -189,6 +189,9 @@ private:
 
   void calculateUnbreakableTailLengths(AnnotatedLine &Line);
 
+  FormatStyle::PointerAlignmentStyle
+  getTokenPointerAlignment(const FormatToken &PointerOrReference);
+
   const FormatStyle &Style;
 
   const AdditionalKeywords &Keywords;
