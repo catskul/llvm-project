@@ -1215,7 +1215,7 @@ unsigned ContinuationIndenter::moveStateToNextToken(LineState &State,
              ? 0
              : 2);
     State.Stack.back().NestedBlockIndent = State.Stack.back().Indent;
-    if (Style.ConstructorInitializerAllOnOneLineOrOnePerLine) {
+    if (Style.ConstructorInitializer != FormatStyle::CI_Compact) {
       State.Stack.back().AvoidBinPacking = true;
       State.Stack.back().BreakBeforeParameter =
           !Style.AllowAllConstructorInitializersOnNextLine;
@@ -1228,8 +1228,10 @@ unsigned ContinuationIndenter::moveStateToNextToken(LineState &State,
     State.Stack.back().Indent =
         State.FirstIndent + Style.ConstructorInitializerIndentWidth;
     State.Stack.back().NestedBlockIndent = State.Stack.back().Indent;
-    if (Style.ConstructorInitializerAllOnOneLineOrOnePerLine)
+    if (Style.ConstructorInitializer != FormatStyle::CI_Compact)
       State.Stack.back().AvoidBinPacking = true;
+    State.Stack.back().BreakBeforeParameter =
+        Style.ConstructorInitializer == FormatStyle::CI_OnePerLine;
   }
   if (Current.is(TT_InheritanceColon))
     State.Stack.back().Indent =

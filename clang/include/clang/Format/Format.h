@@ -1295,8 +1295,17 @@ struct FormatStyle {
   ///     return 0;
   ///   }
   /// \endcode
-  bool ConstructorInitializerAllOnOneLineOrOnePerLine;
+  /// which should not be split into lines or otherwise changed.
   // clang-format on
+  enum ConstructorInitializerKind {
+    CI_Compact,    ///< Put all initializers in a compact block
+    CI_BestFit,    ///< Use the compact if all fits on a single line,
+                   ///< otherwise put one per line.
+    CI_OnePerLine, ///< Put all initializers on their own line
+  };
+
+  /// The placement of the constructor initializers.
+  ConstructorInitializerKind ConstructorInitializer;
 
   /// The number of characters to use for indentation of constructor
   /// initializer lists as well as inheritance lists.
@@ -2329,8 +2338,7 @@ struct FormatStyle {
            BreakStringLiterals == R.BreakStringLiterals &&
            ColumnLimit == R.ColumnLimit && CommentPragmas == R.CommentPragmas &&
            BreakInheritanceList == R.BreakInheritanceList &&
-           ConstructorInitializerAllOnOneLineOrOnePerLine ==
-               R.ConstructorInitializerAllOnOneLineOrOnePerLine &&
+           ConstructorInitializer == R.ConstructorInitializer &&
            ConstructorInitializerIndentWidth ==
                R.ConstructorInitializerIndentWidth &&
            ContinuationIndentWidth == R.ContinuationIndentWidth &&

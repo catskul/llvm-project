@@ -366,6 +366,18 @@ struct ScalarEnumerationTraits<FormatStyle::SpaceBeforeParensOptions> {
   }
 };
 
+
+template <>
+struct ScalarEnumerationTraits<FormatStyle::ConstructorInitializerKind> {
+  static void enumeration(IO &IO,
+                          FormatStyle::ConstructorInitializerKind &Value) {
+    IO.enumCase(Value, "Compact", FormatStyle::CI_Compact);
+    IO.enumCase(Value, "BestFit", FormatStyle::CI_BestFit);
+    IO.enumCase(Value, "OnePerLine", FormatStyle::CI_OnePerLine);
+  }
+};
+
+
 template <> struct MappingTraits<FormatStyle> {
   static void mapping(IO &IO, FormatStyle &Style) {
     // When reading, read the language first, we need it for getPredefinedStyle.
@@ -502,8 +514,15 @@ template <> struct MappingTraits<FormatStyle> {
     IO.mapOptional("ColumnLimit", Style.ColumnLimit);
     IO.mapOptional("CommentPragmas", Style.CommentPragmas);
     IO.mapOptional("CompactNamespaces", Style.CompactNamespaces);
+
+    // Provide backward compatibility vs ConstructorInitializer
+    bool ConstructorInitializerAllOnOneLineOrOnePerLine = false;
     IO.mapOptional("ConstructorInitializerAllOnOneLineOrOnePerLine",
-                   Style.ConstructorInitializerAllOnOneLineOrOnePerLine);
+                   ConstructorInitializerAllOnOneLineOrOnePerLine);
+    if (ConstructorInitializerAllOnOneLineOrOnePerLine)
+      Style.ConstructorInitializer = FormatStyle::CI_BestFit;
+
+    IO.mapOptional("ConstructorInitializer", Style.ConstructorInitializer);
     IO.mapOptional("ConstructorInitializerIndentWidth",
                    Style.ConstructorInitializerIndentWidth);
     IO.mapOptional("ContinuationIndentWidth", Style.ContinuationIndentWidth);
@@ -861,7 +880,7 @@ FormatStyle getLLVMStyle(FormatStyle::LanguageKind Language) {
   LLVMStyle.ColumnLimit = 80;
   LLVMStyle.CommentPragmas = "^ IWYU pragma:";
   LLVMStyle.CompactNamespaces = false;
-  LLVMStyle.ConstructorInitializerAllOnOneLineOrOnePerLine = false;
+  LLVMStyle.ConstructorInitializer = FormatStyle::CI_Compact;
   LLVMStyle.ConstructorInitializerIndentWidth = 4;
   LLVMStyle.ContinuationIndentWidth = 4;
   LLVMStyle.Cpp11BracedListStyle = true;
@@ -964,7 +983,7 @@ FormatStyle getGoogleStyle(FormatStyle::LanguageKind Language) {
   GoogleStyle.AllowShortLoopsOnASingleLine = true;
   GoogleStyle.AlwaysBreakBeforeMultilineStrings = true;
   GoogleStyle.AlwaysBreakTemplateDeclarations = FormatStyle::BTDS_Yes;
-  GoogleStyle.ConstructorInitializerAllOnOneLineOrOnePerLine = true;
+  GoogleStyle.ConstructorInitializer = FormatStyle::CI_BestFit;
   GoogleStyle.DerivePointerAlignment = true;
   GoogleStyle.IncludeStyle.IncludeCategories = {{"^<ext/.*\\.h>", 2, 0},
                                                 {"^<.*\\.h>", 1, 0},

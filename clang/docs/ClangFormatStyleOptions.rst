@@ -1470,10 +1470,20 @@ the configuration (without a prefix: ``Auto``).
     namespace Extra {
     }}}
 
-**ConstructorInitializerAllOnOneLineOrOnePerLine** (``bool``)
-  If the constructor initializers don't fit on a line, put each
-  initializer on its own line.
+**ConstructorInitializer** (``ConstructorInitializerKind``)
+  Formatting of the constructor initializer.
 
+  Possible values:
+
+  * ``CI_Compact`` (in configuration: ``Compact``)
+    Puts all the initializers in a compact block of multiple lines with
+    multiple initializers on the same line.
+  * ``CI_BestFit`` (in configuration: ``BestFit``)
+    Eiter all initializers are on a single line (it this fits),
+    otherwise every initializer has its own line.
+  * ``CI_OnePerLine`` (in configuration: ``OnePerLine``)
+    Always put the initializers on their own line, regardless if they would fit
+    on a single line.
   .. code-block:: c++
 
     true:
