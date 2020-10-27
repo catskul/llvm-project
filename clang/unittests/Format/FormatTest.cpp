@@ -893,6 +893,12 @@ TEST_F(FormatTest, SeparatePointerReferenceAlignment) {
   verifyFormat("int&& f3(int& b, int&& c, int* a);", Style);
   verifyFormat("int* a = f1();\nint& b = f2();\nint&& c = f3();", Style);
   Style.PointerAlignment = FormatStyle::PAS_Right;
+  Style.ReferenceAlignment = FormatStyle::RAS_Pointer;
+  verifyFormat("int *f1(int *a, int &b, int &&c);", Style);
+  verifyFormat("int &f2(int &&c, int *a, int &b);", Style);
+  verifyFormat("int &&f3(int &b, int &&c, int *a);", Style);
+  verifyFormat("int *a = f1();\nint &b = f2();\nint &&c = f3();", Style);
+  Style.PointerAlignment = FormatStyle::PAS_Right;
   Style.ReferenceAlignment = FormatStyle::RAS_Left;
   verifyFormat("int *f1(int *a, int& b, int&& c);", Style);
   verifyFormat("int& f2(int&& c, int *a, int& b);", Style);
@@ -910,6 +916,9 @@ TEST_F(FormatTest, SeparatePointerReferenceAlignment) {
   verifyFormat("int &f2(int &&c, int * a, int &b);", Style);
   verifyFormat("int &&f3(int &b, int &&c, int * a);", Style);
   verifyFormat("int * a = f1();\nint &b = f2();\nint &&c = f3();", Style);
+
+  // we don't handle this yet, so output may be arbitrary until it's specifically handled
+  //verifyFormat("int Add2(BTree * &Root, char * szToAdd)", Style);
 }
 
 TEST_F(FormatTest, FormatsForLoop) {
